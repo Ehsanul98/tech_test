@@ -4,7 +4,7 @@ import cors from 'cors';
 import { gameRouter } from '../routes/game.routes';
 import { statsRouter } from '../routes/stats.routes';
 import { initializeDatabase } from '../database/init';
-import { getDatabase } from '../database/connection';
+import { closeDatabase, getDatabase } from '../database/connection';
 import fs from 'fs';
 
 // Create test app
@@ -31,10 +31,8 @@ beforeAll(() => {
 });
 
 // Cleanup after tests
-afterAll(() => {
-	const db = getDatabase();
-	db.close();
-
+afterAll(async () => {
+	await closeDatabase();
 	// Remove test database
 	if (fs.existsSync(TEST_DB_PATH)) {
 		fs.unlinkSync(TEST_DB_PATH);

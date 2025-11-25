@@ -1,5 +1,6 @@
 import sqlite3 from 'sqlite3';
 import { Database } from 'sqlite3';
+import fs from 'fs';
 
 let db: Database | null = null;
 
@@ -17,4 +18,20 @@ export const getDatabase = (): Database => {
 		});
 	}
 	return db;
+};
+
+export const closeDatabase = (): Promise<void> => {
+	return new Promise((resolve, reject) => {
+		if (db) {
+			db.close((err) => {
+				if (err) reject(err);
+				else {
+					db = null;
+					resolve();
+				}
+			});
+		} else {
+			resolve();
+		}
+	});
 };
